@@ -1,0 +1,63 @@
+---
+# ==========================================
+# PHASE 1: System Prep & Docker Installation
+# ==========================================
+- name: Prepare Pis and Install Docker
+  hosts: managers
+  become: true
+  tasks:
+    - name: Enable cgroups for Docker memory features (Required for RPi)
+      lineinfile:
+        path: /boot/firmware/cmdline.txt # Use /boot/cmdline.txt on older OS versions
+        backrefs: yes
+        regexp: '(^([\w](?!.*cgroup_memory=1))*$)'
+        line: '\1 cgroup_enable=memory cgroup_memory=1'
+      register: cgroup_added
+
+    - name: Reboot if cgroups were added
+      reboot:
+      when: cgroup_added.changed
+
+    - name: Install dependencies
+      apt:
+        name: [apt-transport-https, ca-certificates, curl, gnupg, python3-pip]
+        state: present
+        update_cache: yes
+
+    - name: Download Docker convenience script
+      get_url:
+        url: https://get.docker.com
+        dest: /tmp/get-docker.sh
+        mode: '0755'
+
+    - name: Run Docker installation script
+      shell: /tmp/get-docker.sh
+      args:
+        creates: /usr/bin/docker
+
+    - name: Ensure current user is in the docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+# ==========================================
+# PHASE 2: Initialize Docker Swarm (Manager)
+# ==========================================
+- name: Initialize Docker Swarm on Manager
+  hosts: managers
+  become: true
+  tasks:
+    - name: Check if Swarm is already initialized
+      shell: docker info --format '{{ '{{' }}.Swarm.LocalNodeState{{ '}}' }}'
+      register: swarm_status
+      changed_when: false
+
+    - name: Init Swarm cluster
+      shell: "docker swarm init --advertise-addr {{ ansible_default_ipv4.interface }}"
+      when: swarm_status.stdout != "active"
+
+    - name: Get Swarm Worker Join Token
+      shell: docker swarm join-token -q worker
+      register: worker_token
+      changed_when: false

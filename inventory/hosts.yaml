@@ -1,0 +1,9 @@
+all:
+  children:
+    akasha:
+      children:
+        managers:
+          hosts:
+            node01:
+              ansible_host: akasha
+              ansible_user: lysz210
