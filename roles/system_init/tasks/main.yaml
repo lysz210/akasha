@@ -1,0 +1,12 @@
+---
+# roles/system_update/tasks/main.yml
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+  become: yes
+
+- name: Upgrade all packages
+  ansible.builtin.apt:
+    upgrade: dist
+  become: yes

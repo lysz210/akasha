@@ -7,3 +7,4 @@ all:
             node01:
               ansible_host: akasha
               ansible_user: lysz210
+              ansible_become_user: root

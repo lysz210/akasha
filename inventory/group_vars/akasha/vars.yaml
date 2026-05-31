@@ -1,2 +1,6 @@
 ansible_connection: ssh
+ansible_become_method: sudo
 ansible_ssh_pass: "{{ vault_ssh_password }}"
+ansible_become_pass: "{{ vault_ssh_password }}"
+
+ansible_become_flags: '-tt'

@@ -1,0 +1,15 @@
+---
+- name: Initialize Docker Swarm on the manager
+  community.docker.docker_swarm:
+    state: present
+  register: swarm_init
+
+- name: Store manager join token
+  ansible.builtin.set_fact:
+    manager_token: "{{ swarm_init.swarm_facts.JoinTokens.Manager }}"
+  when: swarm_init.swarm_facts.JoinTokens is defined
+
+- name: Store worker join token
+  ansible.builtin.set_fact:
+    worker_token: "{{ swarm_init.swarm_facts.JoinTokens.Worker }}"
+  when: swarm_init.swarm_facts.JoinTokens is defined

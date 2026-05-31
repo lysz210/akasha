@@ -1,0 +1,29 @@
+# templates/compose.yaml.j2
+services:
+  capcnan:
+    image: nats:latest
+    networks:
+      - akasha_net
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    command: "--cluster_name CAPACNAN -js -sd /data/jetstream --http_port 8222"
+    restart: unless-stopped
+    volumes:
+      - capcnan_data:/data/jetstream
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.2'
+          memory: 128M
+
+networks:
+  akasha_net:
+    driver: overlay
+
+volumes:
+  capcnan_data:
