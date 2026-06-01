@@ -25,3 +25,9 @@
     manager_token: "{{ join_tokens.results[0].stdout }}"
     worker_token: "{{ join_tokens.results[1].stdout }}"
   when: swarm_state.stdout != "active" or swarm_init.changed
+
+- name: Create shared overlay network for Akasha Cloud
+  community.docker.docker_network:
+    name: "{{ shared_net_name }}"
+    driver: overlay
+    attachable: true

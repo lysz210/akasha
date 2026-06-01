@@ -12,6 +12,5 @@
         name: system_init
 
   roles:
-    - role: docker_installation
-    - role: docker_swarm_init
     - role: akasha_cloud
+    - role: capacnan

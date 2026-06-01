@@ -4,3 +4,6 @@ ansible_ssh_pass: "{{ vault_ssh_password }}"
 ansible_become_pass: "{{ vault_ssh_password }}"
 
 ansible_become_flags: '-tt'
+
+# The master network name for Akasha_cloud
+shared_net_name: akasha_net
