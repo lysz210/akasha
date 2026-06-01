@@ -1,0 +1,22 @@
+---
+
+
+- name: Create directory for stack
+  ansible.builtin.file:
+    path: /home/{{ ansible_user }}/capacnan
+    state: directory
+    mode: '0755'
+
+- name: Deploy compose template
+  ansible.builtin.template:
+    src: compose.yaml.j2
+    dest: /home/{{ ansible_user }}/capacnan/compose.yaml
+    mode: '0644'
+
+- name: Deploy Swarm stack
+  community.docker.docker_stack:
+    state: present
+    name: capacnan_stack
+    compose:
+      - /home/{{ ansible_user }}/capacnan/compose.yaml
+    prune: true

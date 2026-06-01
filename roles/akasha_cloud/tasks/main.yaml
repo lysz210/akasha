@@ -1,4 +1,11 @@
 ---
+
+- name: Create shared overlay network for Akasha Cloud
+  community.docker.docker_network:
+    name: akasha_net
+    driver: overlay
+    attachable: true
+
 - name: Create directory for stack
   ansible.builtin.file:
     path: /home/{{ ansible_user }}/akasha_cloud
@@ -15,5 +22,5 @@
   community.docker.docker_stack:
     state: present
     name: akasha_stack
-    compose:
-      - /home/{{ ansible_user }}/akasha_cloud/compose.yaml
+    compose: /home/{{ ansible_user }}/akasha_cloud/compose.yaml
+    prune: true
