@@ -10,3 +10,15 @@
   ansible.builtin.apt:
     upgrade: dist
   become: yes
+#
+#- name: Ensure UFW is installed
+#  apt:
+#    name: ufw
+#    state: present
+#
+#- name: Ensure port 8080 is allowed in UFW
+#  community.general.ufw:
+#    rule: allow
+#    port: '8080'
+#    proto: tcp
+#    state: enabled

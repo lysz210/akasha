@@ -9,13 +9,9 @@
       - gnupg
       - lsb-release
       - python3-pip
+      - python3-jsondiff
     state: present
     update_cache: yes
-
-- name: Add Docker GPG apt key
-  ansible.builtin.apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
 
 - name: Add Docker repository using deb822 format
   ansible.builtin.deb822_repository:
@@ -47,11 +43,3 @@
     name: docker
     state: started
     enabled: yes
-
-- name: Install required Python libraries for Ansible modules
-  ansible.builtin.pip:
-    name:
-      - jsondiff
-      - docker
-    state: present
-    executable: pip3

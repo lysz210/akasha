@@ -1,16 +1,24 @@
-# templates/compose.yaml.j2
 services:
-  capcnan:
+  traefik:
+    image: traefik:v3.7.1
+    command:
+      - "--providers.swarm=true"
+      - "--providers.swarm.exposedByDefault=false"
+      - "--entrypoints.web.address=:80"
+    volumes:
+      - /run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "80:80"
+    networks:
+      - akasha_net
+  capacnan:
     image: nats:latest
     networks:
       - akasha_net
-    ports:
-      - "4222:4222"
-      - "8222:8222"
-    command: "--cluster_name CAPACNAN -js -sd /data/jetstream --http_port 8222"
+    command: "--cluster_name CAPACNAN -js -sd /data -m 8222"
     restart: unless-stopped
     volumes:
-      - capcnan_data:/data/jetstream
+      - capacnan_data:/data
     deploy:
       replicas: 1
       resources:
@@ -20,10 +28,17 @@ services:
         reservations:
           cpus: '0.2'
           memory: 128M
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.capacnan-monitor.rule=PathPrefix(`/capacnan`)
+        - traefik.http.routers.capacnan-monitor.middlewares=capacnan-stripprefix
+        - "traefik.http.middlewares.capacnan-stripprefix.stripprefix.prefixes=/capacnan"
+        - traefik.http.services.capacnan-monitor-service.loadbalancer.server.port=8222
+        - traefik.docker.network=akasha_net
 
 networks:
   akasha_net:
     driver: overlay
 
 volumes:
-  capcnan_data:
+  capacnan_data:

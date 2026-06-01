@@ -1,15 +1,27 @@
 ---
+- name: Check if node is already part of a swarm
+  become: yes
+  ansible.builtin.command: docker info --format '{{ "{{.Swarm.LocalNodeState}}" }}'
+  register: swarm_state
+  changed_when: false
+
 - name: Initialize Docker Swarm on the manager
-  community.docker.docker_swarm:
-    state: present
+  become: yes
+  ansible.builtin.command: docker swarm init
+  when: swarm_state.stdout != "active"
   register: swarm_init
 
-- name: Store manager join token
-  ansible.builtin.set_fact:
-    manager_token: "{{ swarm_init.swarm_facts.JoinTokens.Manager }}"
-  when: swarm_init.swarm_facts.JoinTokens is defined
+- name: Get swarm join tokens
+  become: yes
+  ansible.builtin.command: docker swarm join-token -q {{ item }}
+  loop:
+    - manager
+    - worker
+  register: join_tokens
+  when: swarm_state.stdout != "active" or swarm_init.changed
 
-- name: Store worker join token
+- name: Store tokens as facts
   ansible.builtin.set_fact:
-    worker_token: "{{ swarm_init.swarm_facts.JoinTokens.Worker }}"
-  when: swarm_init.swarm_facts.JoinTokens is defined
+    manager_token: "{{ join_tokens.results[0].stdout }}"
+    worker_token: "{{ join_tokens.results[1].stdout }}"
+  when: swarm_state.stdout != "active" or swarm_init.changed
