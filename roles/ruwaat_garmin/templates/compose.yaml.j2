@@ -17,6 +17,8 @@ services:
           memory: 64M
       labels:
         - traefik.enable=true
+        - traefik.http.routers.ruwaat_garmin-monitor.entrypoints=websecure
+        - traefik.http.routers.ruwaat_garmin-monitor.tls=true
         - traefik.http.routers.ruwaat_garmin-monitor.rule=PathPrefix(`/alidrisi/ruwaat/garmin`)
         - traefik.http.routers.ruwaat_garmin-monitor.middlewares=ruwaat_garmin-stripprefix
         - traefik.http.middlewares.ruwaat_garmin-stripprefix.stripprefix.prefixes=/alidrisi/ruwaat/garmin

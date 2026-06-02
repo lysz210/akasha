@@ -18,6 +18,8 @@ services:
           memory: 128M
       labels:
         - traefik.enable=true
+        - traefik.http.routers.capacnan-monitor.entrypoints=websecure
+        - traefik.http.routers.capacnan-monitor.tls=true
         - traefik.http.routers.capacnan-monitor.rule=PathPrefix(`/capacnan`)
         - traefik.http.routers.capacnan-monitor.middlewares=capacnan-stripprefix
         - traefik.http.middlewares.capacnan-stripprefix.stripprefix.prefixes=/capacnan

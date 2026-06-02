@@ -1,0 +1,3 @@
+---
+
+akasha_cloud_stack_directory: "/home/{{ ansible_user }}/akasha_cloud"

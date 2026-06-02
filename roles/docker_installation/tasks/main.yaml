@@ -10,6 +10,7 @@
       - lsb-release
       - python3-pip
       - python3-jsondiff
+      - python3-cryptography
     state: present
     update_cache: yes
 
