@@ -14,3 +14,14 @@
   roles:
     - role: akasha_cloud
     - role: capacnan
+    - role: ruwaat_garmin
+
+  post_tasks:
+    - name: Run a complete Docker system prune
+      community.docker.docker_prune:
+        containers: true
+        networks: true
+        images: true
+        builder_cache: true
+        images_filters:
+          dangling: false  # False ensures ALL unused images are wiped, not just tagged ones

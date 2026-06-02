@@ -1,0 +1,29 @@
+services:
+  ruwaat_garmin:
+    image: ghcr.io/lysz210/ruwaat-garmin:latest
+    networks:
+      - akasha_net
+    restart: unless-stopped
+    environment:
+      CAPACNAN_SERVER_URI: nats://capacnan:4222
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.ruwaat_garmin-monitor.rule=PathPrefix(`/alidrisi/ruwaat/garmin`)
+        - traefik.http.routers.ruwaat_garmin-monitor.middlewares=ruwaat_garmin-stripprefix
+        - traefik.http.middlewares.ruwaat_garmin-stripprefix.stripprefix.prefixes=/alidrisi/ruwaat/garmin
+        - traefik.http.services.ruwaat_garmin-monitor-service.loadbalancer.server.port=8080
+        - traefik.docker.network={{ shared_net_name }}
+
+networks:
+  akasha_net:
+    name: {{ shared_net_name }}
+    external: true
