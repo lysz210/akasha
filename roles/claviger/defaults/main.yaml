@@ -1,0 +1,3 @@
+---
+
+claviger_stack_directory: "/home/{{ ansible_user }}/claviger"

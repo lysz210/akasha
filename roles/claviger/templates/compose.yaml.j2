@@ -1,0 +1,30 @@
+services:
+  claviger:
+    image: ghcr.io/lysz210/claviger:latest
+    networks:
+      - akasha_net
+    restart: unless-stopped
+    env_file: {{ claviger_stack_directory }}/.env
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.1'
+          memory: 32M
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.claviger-monitor.entrypoints=websecure
+        - traefik.http.routers.claviger-monitor.tls=true
+        - traefik.http.routers.claviger-monitor.rule=PathPrefix(`/claviger`)
+        - traefik.http.routers.claviger-monitor.middlewares=claviger-stripprefix
+        - traefik.http.middlewares.claviger-stripprefix.stripprefix.prefixes=/claviger
+        - traefik.http.services.claviger-monitor-service.loadbalancer.server.port=8080
+        - traefik.docker.network={{ shared_net_name }}
+
+networks:
+  akasha_net:
+    name: {{ shared_net_name }}
+    external: true
