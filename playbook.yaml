@@ -15,6 +15,7 @@
     - role: akasha_cloud
     - role: capacnan
     - role: claviger
+    - role: ruwaat_intervals
 
   post_tasks:
     - name: Run a complete Docker system prune

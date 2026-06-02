@@ -1,0 +1,31 @@
+services:
+  ruwaat_intervals:
+    image: ghcr.io/lysz210/ruwaat-intervals:latest
+    networks:
+      - akasha_net
+    restart: unless-stopped
+    environment:
+      CAPACNAN_SERVER_URI: nats://capacnan:4222
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.ruwaat_intervals-monitor.entrypoints=websecure
+        - traefik.http.routers.ruwaat_intervals-monitor.tls=true
+        - traefik.http.routers.ruwaat_intervals-monitor.rule=PathPrefix(`/alidrisi/ruwaat/intervals`)
+        - traefik.http.routers.ruwaat_intervals-monitor.middlewares=ruwaat_intervals-stripprefix
+        - traefik.http.middlewares.ruwaat_intervals-stripprefix.stripprefix.prefixes=/alidrisi/ruwaat/intervals
+        - traefik.http.services.ruwaat_intervals-monitor-service.loadbalancer.server.port=8080
+        - traefik.docker.network={{ shared_net_name }}
+
+networks:
+  akasha_net:
+    name: {{ shared_net_name }}
+    external: true
