@@ -3,6 +3,7 @@ services:
     image: ghcr.io/lysz210/claviger:latest
     networks:
       - akasha_net
+      - capacnan_net
     restart: unless-stopped
     env_file: {{ claviger_stack_directory }}/.env
     deploy:
@@ -22,9 +23,12 @@ services:
         - traefik.http.routers.claviger-monitor.middlewares=claviger-stripprefix
         - traefik.http.middlewares.claviger-stripprefix.stripprefix.prefixes=/claviger
         - traefik.http.services.claviger-monitor-service.loadbalancer.server.port=8080
-        - traefik.docker.network={{ shared_net_name }}
+        - traefik.docker.network={{ public_net_name }}
 
 networks:
   akasha_net:
-    name: {{ shared_net_name }}
+    name: {{ public_net_name }}
+    external: true
+  capacnan_net:
+    name: {{ private_nats_net_name }}
     external: true

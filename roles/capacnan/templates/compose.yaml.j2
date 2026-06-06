@@ -3,6 +3,7 @@ services:
     image: nats:latest
     networks:
       - akasha_net
+      - capacnan_net
     command: "--cluster_name CAPACNAN -js -sd /data -m 8222"
     restart: unless-stopped
     volumes:
@@ -24,11 +25,17 @@ services:
         - traefik.http.routers.capacnan-monitor.middlewares=capacnan-stripprefix
         - traefik.http.middlewares.capacnan-stripprefix.stripprefix.prefixes=/capacnan
         - traefik.http.services.capacnan-monitor-service.loadbalancer.server.port=8222
-        - traefik.docker.network={{ shared_net_name }}
-
+        - traefik.docker.network={{ public_net_name }}
+  chaskiwasi:
+    image: ghcr.io/lysz210/capacnan-chaskiwasi:0.0.1
+    networks:
+      - capacnan_net
 networks:
   akasha_net:
-    name: {{ shared_net_name }}
+    name: {{ public_net_name }}
+    external: true
+  capacnan_net:
+    name: {{ private_nats_net_name }}
     external: true
 
 volumes:

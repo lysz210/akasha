@@ -4,6 +4,7 @@ services:
     command:
       - "--providers.swarm=true"
       - "--providers.swarm.exposedByDefault=false"
+      - "--providers.swarm.network={{ public_net_name }}"
       - "--providers.file.directory=/dynamic"
       - "--providers.file.watch=true"
 
@@ -24,5 +25,5 @@ services:
 
 networks:
   akasha_net:
-    name: {{ shared_net_name }}
+    name: {{ public_net_name }}
     external: true

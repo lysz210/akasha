@@ -3,6 +3,7 @@ services:
     image: ghcr.io/lysz210/ruwaat-intervals:latest
     networks:
       - akasha_net
+      - capacnan_net
     restart: unless-stopped
     environment:
       CAPACNAN_SERVER_URI: nats://capacnan:4222
@@ -23,9 +24,12 @@ services:
         - traefik.http.routers.ruwaat_intervals-monitor.middlewares=ruwaat_intervals-stripprefix
         - traefik.http.middlewares.ruwaat_intervals-stripprefix.stripprefix.prefixes=/alidrisi/ruwaat/intervals
         - traefik.http.services.ruwaat_intervals-monitor-service.loadbalancer.server.port=8080
-        - traefik.docker.network={{ shared_net_name }}
+        - traefik.docker.network={{ public_net_name }}
 
 networks:
   akasha_net:
-    name: {{ shared_net_name }}
+    name: {{ public_net_name }}
+    external: true
+  capacnan_net:
+    name: {{ private_nats_net_name }}
     external: true

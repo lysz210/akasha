@@ -3,6 +3,7 @@ services:
     image: ghcr.io/lysz210/ruwaat-garmin:latest
     networks:
       - akasha_net
+      - capacnan_net
     restart: unless-stopped
     environment:
       CAPACNAN_SERVER_URI: nats://capacnan:4222
@@ -23,9 +24,12 @@ services:
         - traefik.http.routers.ruwaat_garmin-monitor.middlewares=ruwaat_garmin-stripprefix
         - traefik.http.middlewares.ruwaat_garmin-stripprefix.stripprefix.prefixes=/alidrisi/ruwaat/garmin
         - traefik.http.services.ruwaat_garmin-monitor-service.loadbalancer.server.port=8080
-        - traefik.docker.network={{ shared_net_name }}
+        - traefik.docker.network={{ public_net_name }}
 
 networks:
   akasha_net:
-    name: {{ shared_net_name }}
+    name: {{ public_net_name }}
+    external: true
+  capacnan_net:
+    name: {{ private_nats_net_name }}
     external: true
