@@ -25,3 +25,4 @@
     compose:
       - "{{ ruwaat_intervals_stack_directory }}/compose.yaml"
     prune: true
+    resolve_image: always

@@ -61,3 +61,4 @@
     name: akasha_stack
     compose: "{{ akasha_cloud_stack_directory }}/compose.yaml"
     prune: true
+    resolve_image: always

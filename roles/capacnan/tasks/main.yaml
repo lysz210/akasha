@@ -19,3 +19,4 @@
     compose:
       - /home/{{ ansible_user }}/capacnan/compose.yaml
     prune: true
+    resolve_image: always

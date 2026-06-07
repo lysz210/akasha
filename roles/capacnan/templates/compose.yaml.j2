@@ -26,10 +26,12 @@ services:
         - traefik.http.middlewares.capacnan-stripprefix.stripprefix.prefixes=/capacnan
         - traefik.http.services.capacnan-monitor-service.loadbalancer.server.port=8222
         - traefik.docker.network={{ public_net_name }}
-  chaskiwasi:
-    image: ghcr.io/lysz210/capacnan-chaskiwasi:0.0.1
+  capacnan-configs:
+    image: ghcr.io/lysz210/capacnan-builder:latest
     networks:
       - capacnan_net
+    environment:
+      CAPACNAN_SERVER_URI: nats://capacnan:4222
 networks:
   akasha_net:
     name: {{ public_net_name }}
