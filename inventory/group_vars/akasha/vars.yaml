@@ -8,3 +8,5 @@ ansible_become_flags: '-tt'
 # The master network name for Akasha_cloud
 public_net_name: akasha_net
 private_nats_net_name: capacnan_net
+
+capacnan_blueprint_url: http://capacnan-configs:8000/blueprint.yaml
