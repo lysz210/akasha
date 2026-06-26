@@ -1,0 +1,22 @@
+---
+
+- name: Create directory for stack
+  ansible.builtin.file:
+    path: "{{ houyi_stack_directory }}"
+    state: directory
+    mode: '0755'
+
+- name: Deploy compose template
+  ansible.builtin.template:
+    src: compose.yaml.j2
+    dest: "{{ houyi_stack_directory }}/compose.yaml"
+    mode: '0644'
+
+# hou-yi requires priviledeg mod
+# to execute host Shutdown
+# it's easier to use docker compose
+- name: Deploy as Standalone Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ houyi_stack_directory }}"
+    state: present
+    pull: always # This replaces Swarm's 'resolve_image: always'

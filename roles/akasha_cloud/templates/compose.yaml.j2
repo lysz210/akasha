@@ -4,6 +4,8 @@ services:
     command:
       - "--providers.swarm=true"
       - "--providers.swarm.exposedByDefault=false"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
       - "--providers.swarm.network={{ public_net_name }}"
       - "--providers.file.directory=/dynamic"
       - "--providers.file.watch=true"

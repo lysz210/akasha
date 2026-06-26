@@ -2,14 +2,20 @@
 
 - name: Create directory for stack
   ansible.builtin.file:
-    path: /home/{{ ansible_user }}/ruwaat_garmin
+    path: "{{ ruwaat_garmin_stack_directory }}"
     state: directory
     mode: '0755'
+
+- name: Deploy .env template from Vault vars
+  ansible.builtin.template:
+    src: env.j2
+    dest: "{{ ruwaat_garmin_stack_directory }}/.env"
+    mode: '0600'
 
 - name: Deploy compose template
   ansible.builtin.template:
     src: compose.yaml.j2
-    dest: /home/{{ ansible_user }}/ruwaat_garmin/compose.yaml
+    dest: "{{ ruwaat_garmin_stack_directory }}/compose.yaml"
     mode: '0644'
 
 - name: Deploy Swarm stack
@@ -17,6 +23,6 @@
     state: present
     name: ruwaat_garmin_stack
     compose:
-      - /home/{{ ansible_user }}/ruwaat_garmin/compose.yaml
+      - "{{ ruwaat_garmin_stack_directory }}/compose.yaml"
     prune: true
     resolve_image: always

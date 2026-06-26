@@ -1,0 +1,3 @@
+---
+
+ruwaat_garmin_stack_directory: "/home/{{ ansible_user }}/ruwaat_garmin"

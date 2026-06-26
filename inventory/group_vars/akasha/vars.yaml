@@ -10,3 +10,7 @@ public_net_name: akasha_net
 private_nats_net_name: capacnan_net
 
 capacnan_blueprint_url: http://capacnan-configs:8000/blueprint.yaml
+
+capacnan_blueprint_root_uri: http://capacnan-configs:8000/blueprint-root.yaml
+capacnan_blueprint_credentials_uri: http://capacnan-configs:8000/blueprint-credentials.yaml
+capacnan_blueprint_geo_uri: http://capacnan-configs:8000/blueprint-geo.yaml

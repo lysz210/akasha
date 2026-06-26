@@ -13,6 +13,7 @@
 
   roles:
     - role: akasha_cloud
+    - role: hou_yi
     - role: capacnan
     - role: claviger
     - role: ruwaat_intervals

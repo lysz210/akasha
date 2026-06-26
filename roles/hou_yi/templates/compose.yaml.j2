@@ -1,0 +1,46 @@
+# hou-yi must run with docker compose
+# this allows to have only this container in privileged mode
+services:
+  hou_yi:
+    image: ghcr.io/lysz210/hou-yi:latest
+    networks:
+      - akasha_net
+    volumes:
+      - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+    # required to execute shutdown
+    privileged: true
+    restart: unless-stopped
+    # required to because is run in docker compose NOT swarm
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.hou_yi-monitor.entrypoints=websecure
+      - traefik.http.routers.hou_yi-monitor.tls=true
+      - traefik.http.routers.hou_yi-monitor.rule=PathPrefix(`/hou-yi`)
+      - traefik.http.routers.hou_yi-monitor.middlewares=hou_yi-stripprefix
+      - traefik.http.middlewares.hou_yi-stripprefix.stripprefix.prefixes=/hou-yi
+      - traefik.http.services.hou_yi-monitor-service.loadbalancer.server.port=8080
+      - traefik.docker.network={{ public_net_name }}
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 10M
+        reservations:
+          cpus: '0.05'
+          memory: 10M
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.hou_yi-monitor.entrypoints=websecure
+        - traefik.http.routers.hou_yi-monitor.tls=true
+        - traefik.http.routers.hou_yi-monitor.rule=PathPrefix(`/hou-yi`)
+        - traefik.http.routers.hou_yi-monitor.middlewares=hou_yi-stripprefix
+        - traefik.http.middlewares.hou_yi-stripprefix.stripprefix.prefixes=/hou-yi
+        - traefik.http.services.hou_yi-monitor-service.loadbalancer.server.port=8080
+        - traefik.docker.network={{ public_net_name }}
+
+
+networks:
+  akasha_net:
+    name: {{ public_net_name }}
+    external: true

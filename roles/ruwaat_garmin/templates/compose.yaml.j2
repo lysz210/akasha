@@ -5,8 +5,7 @@ services:
       - akasha_net
       - capacnan_net
     restart: unless-stopped
-    environment:
-      CAPACNAN_SERVER_URI: nats://capacnan:4222
+    env_file: {{ ruwaat_garmin_stack_directory }}/.env
     deploy:
       replicas: 1
       resources:
