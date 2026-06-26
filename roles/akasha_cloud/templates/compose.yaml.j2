@@ -4,6 +4,7 @@ services:
     command:
       - "--providers.swarm=true"
       - "--providers.swarm.exposedByDefault=false"
+      # watch on docker too for docker compose services
       - "--providers.docker=true"
       - "--providers.docker.exposedByDefault=false"
       - "--providers.swarm.network={{ public_net_name }}"
